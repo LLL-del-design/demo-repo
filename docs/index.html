@@ -650,7 +650,7 @@ els.btnGot.addEventListener('click', () => {
     els.scratchCv.classList.remove('cleared');
     els.badge.hidden = true;
     els.resultCard.hidden = true;
-    els.startOverlay.hidden = false;
+    els.overlay.hidden = false;
     drawPrizeFaceIdle();
   }
 });
@@ -664,7 +664,7 @@ els.btnRetry.addEventListener('click', () => {
   els.scratchCv.classList.remove('cleared');
   els.badge.hidden = true;
   els.resultCard.hidden = true;
-  els.startOverlay.hidden = false;
+  els.overlay.hidden = false;
   drawPrizeFaceIdle();
   // 自动开始下一轮
   setTimeout(startDraw, 120);
