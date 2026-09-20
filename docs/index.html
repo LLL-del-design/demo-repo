@@ -376,6 +376,7 @@ function loadRecord() {
     if (!raw) return null;
     const rec = JSON.parse(raw);
     if (!rec || rec.date !== todayStr() || !rec.prizeId) return null;
+    if (rec.prizeId === 'retry') return null; // 再来一次不算完成，不阻止再抽
     return rec;
   } catch (e) { return null; }
 }
@@ -639,11 +640,25 @@ function closeModal() {
   els.mask.hidden = true;
   document.body.style.overflow = '';
 }
-els.btnGot.addEventListener('click', closeModal);
+els.btnGot.addEventListener('click', () => {
+  closeModal();
+  // "再来一次"关闭弹窗后重置为可抽奖状态，不消耗当日次数
+  if (current && current.prizeId === 'retry') {
+    try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+    state = 'idle';
+    current = null;
+    els.scratchCv.classList.remove('cleared');
+    els.badge.hidden = true;
+    els.resultCard.hidden = true;
+    els.startOverlay.hidden = false;
+    drawPrizeFaceIdle();
+  }
+});
 els.btnClose.addEventListener('click', closeModal);
 els.btnRetry.addEventListener('click', () => {
   closeModal();
-  // 重置为未开奖状态，允许再抽一次
+  // 清除本地记录，重置为未开奖状态，允许再抽一次
+  try { localStorage.removeItem(STORE_KEY); } catch (e) {}
   state = 'idle';
   current = null;
   els.scratchCv.classList.remove('cleared');
